@@ -28,9 +28,12 @@ func connect() {
 		//username := os.Getenv("DB_USERNAME")
 		//password := os.Getenv("DB_PASSWORD")
 
+		//readHost := "topdawg.circlepix.com"
+		//username := "webuser"
+		//password := "lakers55"
 		readHost := "localhost"
-		username := "webuser"
-		password := "lakers55"
+		username := "root"
+		password := "laker.1"
 
 		if readHost == "" || username == "" || password == "" {
 			log.Fatal("invalid db config env variables not set")

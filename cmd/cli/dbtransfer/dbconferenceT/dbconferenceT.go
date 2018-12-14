@@ -3,8 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
 	"topdawgsportsAPI/pkg/database"
 	"topdawgsportsAPI/pkg/database/dbconference"
 )
@@ -13,7 +13,7 @@ var db *sql.DB
 
 func main() {
 	// grab all conferences from the existing database
-	db, err := sql.Open("mysql", "webuser:lakers55@tcp(127.0.0.1:3306)/topdawg?parseTime=true")
+	db, err := sql.Open("mysql", "webuser:lakers55@tcp(topdawg.circlepix.com:3306)/topdawg?parseTime=true")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -32,7 +32,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		max := 9;
+		max := 9
 		if abbrev.String != "" {
 			if len(abbrev.String) < max {
 				max = len(abbrev.String)

@@ -1,15 +1,15 @@
 package user
 
 import (
+	"database/sql"
+	"fmt"
 	"github.com/MordFustang21/nova"
 	"net/http"
 	"strconv"
+	"time"
+	"topdawgsportsAPI/pkg/database"
 	"topdawgsportsAPI/pkg/database/dbuser"
 	"topdawgsportsAPI/pkg/log"
-	"topdawgsportsAPI/pkg/database"
-	"time"
-	"fmt"
-	"database/sql"
 )
 
 type newUserForm struct {
@@ -23,9 +23,9 @@ type newUserForm struct {
 
 // RegisterRoutes sets up routs on a given nova.Server instance
 func RegisterRoutes(s *nova.Server) {
-	s.Get("/user/:userId", getUserByID)
-	s.Get("/user/list", getUsers)
-	s.Post("/user", newUser)
+	s.Get("/users/:userId", getUserByID)
+	s.Get("/users", getUsers)
+	s.Post("/users", newUser)
 }
 
 // Response is the json representation of a user
@@ -105,14 +105,14 @@ func newUser(req *nova.Request) error {
 	}
 
 	user := dbuser.User{
-		Email:        database.ToNullString(u.Email, false),
-		FirstName:    database.ToNullString(u.FirstName, false),
-		LastName:     database.ToNullString(u.LastName, false),
-		Username:     database.ToNullString(u.Username, false),
-		UserPassword: database.ToNullString(u.Password, false),
-		Cell:         database.ToNullString(u.Cell, false),
-		Created:      time.Now(),
-		LastLogin:    time.Now(),
+		Email:         u.Email,
+		FirstName:     u.FirstName,
+		LastName:      database.ToNullString(u.LastName, false),
+		Username:      database.ToNullString(u.Username, false),
+		UserPassword:  database.ToNullString(u.Password, false),
+		Cell:          database.ToNullString(u.Cell, false),
+		CreatedDate:   time.Now(),
+		LastLoginDate: database.ToNullTime(time.Now(), false),
 	}
 
 	fmt.Printf("User Obj : %#v\n", user)

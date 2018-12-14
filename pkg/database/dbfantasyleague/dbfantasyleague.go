@@ -1,9 +1,9 @@
 package dbfantasyleague
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
 	"time"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type FantasyLeague struct {
@@ -12,7 +12,7 @@ type FantasyLeague struct {
 	FantasyGameID   int64               `db:"fantasy_game_id"`
 	Name            string              `db:"name"`
 	Description     database.NullString `db:"description"`
-	LeaguePassword  database.NullString `db:"league_password""`
+	LeaguePassword  database.NullString `db:"league_password"`
 	Visibility      string              `db:"visibility"`
 	CreatedDate     time.Time           `db:"created_date"`
 	CreatedByUserID database.NullInt64  `db:"created_by_user_id"`
@@ -67,4 +67,19 @@ func Insert(d *FantasyLeague) error {
 	d.FantasyLeagueID = ID
 
 	return nil
+}
+
+// ReadAllBySeasonID_FantasyGameID reads all fantasy_leagues in the database for the given seasonID and gameID
+func ReadAllBySeasonIDFantasyGameID(seasonID, gameID int64, orderBy string) ([]FantasyLeague, error) {
+	var recs []FantasyLeague
+	if orderBy == "" {
+		orderBy = "fantasy_league_id asc"
+	}
+	err := database.Select(&recs, "SELECT * FROM fantasy_league WHERE season_id = ? AND fantasy_game_id = ? ORDER BY "+orderBy, seasonID, gameID)
+	fmt.Printf("SELECT * FROM fantasy_league WHERE season_id = ? AND fantasy_game_id = ? ORDER BY "+orderBy, seasonID, gameID)
+	if err != nil {
+		return nil, err
+	}
+
+	return recs, nil
 }

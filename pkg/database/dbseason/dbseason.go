@@ -1,8 +1,8 @@
 package dbseason
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type Season struct {
@@ -11,6 +11,17 @@ type Season struct {
 	StartingYear database.NullInt64 `db:"starting_year"`
 	SportLevelID int64              `db:"sport_level_id"`
 	Status       string             `db:"status"`
+}
+
+type SeasonSportLevel struct {
+	SeasonID     int64              `db:"season_id"`
+	Name         string             `db:"name"`
+	StartingYear database.NullInt64 `db:"starting_year"`
+	SportLevelID int64              `db:"sport_level_id"`
+	Status       string             `db:"status"`
+	SportID      int64              `db:"sport_id"`
+	SportLevel   string             `db:"level"`
+	SportName    string             `db:"sport_name"`
 }
 
 // ReadByID reads season by id column
@@ -24,10 +35,38 @@ func ReadByID(ID int64) (*Season, error) {
 	return &s, nil
 }
 
+// ReadByIDWithSportLevel reads season by id column
+func ReadByIDWithSportLevel(ID int64) (*SeasonSportLevel, error) {
+	s := SeasonSportLevel{}
+	err := database.Get(&s, "SELECT se.*, sl.level, s.sport_id, s.name as 'sport_name' FROM season se INNER JOIN sport_level sl ON sl.sport_level_id = se.sport_level_id INNER JOIN sport s ON s.sport_id = sl.sport_id WHERE se.season_id = ?", ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &s, nil
+}
+
 // ReadAll reads all seasons in the database
-func ReadAll() ([]Season, error) {
+func ReadAll(orderBy string) ([]Season, error) {
 	var seasons []Season
-	err := database.Select(&seasons, "SELECT * FROM season")
+	if orderBy == "" {
+		orderBy = "season_id asc"
+	}
+	err := database.Select(&seasons, "SELECT * FROM season ORDER BY "+orderBy)
+	if err != nil {
+		return nil, err
+	}
+
+	return seasons, nil
+}
+
+// ReadAll reads all seasons in the database and the matching sportlevel and sport data
+func ReadAllWithSportLevel(orderBy string) ([]SeasonSportLevel, error) {
+	var seasons []SeasonSportLevel
+	if orderBy == "" {
+		orderBy = "season_id asc"
+	}
+	err := database.Select(&seasons, "SELECT se.*, sl.level, s.sport_id, s.name as 'sport_name' FROM season se INNER JOIN sport_level sl ON sl.sport_level_id = se.sport_level_id INNER JOIN sport s ON s.sport_id = sl.sport_id ORDER BY "+orderBy)
 	if err != nil {
 		return nil, err
 	}

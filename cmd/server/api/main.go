@@ -1,12 +1,13 @@
 package main
 
 import (
+	"net/http"
 	"topdawgsportsAPI/cmd/server/api/handler"
 	"topdawgsportsAPI/cmd/server/api/handler/user"
 	"topdawgsportsAPI/cmd/server/api/middleware"
-	"net/http"
 
 	"github.com/MordFustang21/nova"
+	"topdawgsportsAPI/cmd/server/api/handler/season"
 )
 
 func main() {
@@ -29,4 +30,5 @@ func main() {
 func registerHandlers(s *nova.Server) {
 	handler.RegisterRoutes(s)
 	user.RegisterRoutes(s)
+	season.RegisterRoutes(s)
 }

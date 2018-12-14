@@ -3,8 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
 	"topdawgsportsAPI/pkg/database"
 	"topdawgsportsAPI/pkg/database/dbmatchup"
 	"topdawgsportsAPI/pkg/database/dbteam"
@@ -15,13 +15,13 @@ var db *sql.DB
 func main() {
 	// grab all teams from the existing database
 	var err error
-	db, err = sql.Open("mysql", "webuser:lakers55@tcp(127.0.0.1:3306)/topdawg?parseTime=true")
+	db, err = sql.Open("mysql", "webuser:lakers55@tcp(topdawg.circlepix.com:3306)/topdawg?parseTime=true")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	rows, err := db.Query("SELECT GameID, SeasonWeekID, GameDate, VisitorID, HomeID, VisitorPts, HomePts, WinnerID, NumOTs  FROM Game")
+	rows, err := db.Query("SELECT GameID, SeasonWeekID, GameDate, VisitorID, HomeID, VisitorPts, HomePts, WinnerID, NumOTs  FROM Game where gameid >= 17520")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -71,6 +71,7 @@ func main() {
 		} else {
 			homeid = getTeamID(temphomeid.Int64)
 		}
+		seasonweekid -= 449
 
 		match := dbmatchup.Matchup{
 			MatchupID:     gameid,

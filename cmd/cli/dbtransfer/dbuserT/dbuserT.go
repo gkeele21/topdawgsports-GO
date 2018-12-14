@@ -3,24 +3,24 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
 	"time"
-	"topdawgsportsAPI/pkg/database/dbuser"
 	"topdawgsportsAPI/pkg/database"
+	"topdawgsportsAPI/pkg/database/dbuser"
 )
 
 var db *sql.DB
 
 func main() {
 	// grab all users from the existing database
-	db, err := sql.Open("mysql", "webuser:lakers55@tcp(127.0.0.1:3306)/topdawg?parseTime=true")
+	db, err := sql.Open("mysql", "webuser:lakers55@tcp(topdawg.circlepix.com:3306)/topdawg?parseTime=true")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	rows, err := db.Query("SELECT FSUserID, Username, Password, DateCreated, FirstName, LastName, Email, LastLogin FROM FSUser")
+	rows, err := db.Query("SELECT FSUserID, Username, Password, DateCreated, FirstName, LastName, Email, LastLogin FROM FSUser WHERE FSUserID > 2")
 	if err != nil {
 		log.Fatal(err)
 	}

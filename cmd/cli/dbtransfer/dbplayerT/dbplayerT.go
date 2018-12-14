@@ -3,8 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
 	"topdawgsportsAPI/pkg/database"
 	"topdawgsportsAPI/pkg/database/dbplayer"
 )
@@ -13,13 +13,13 @@ var db *sql.DB
 
 func main() {
 	// grab all players from the existing database
-	db, err := sql.Open("mysql", "webuser:lakers55@tcp(127.0.0.1:3306)/topdawg?parseTime=true")
+	db, err := sql.Open("mysql", "webuser:lakers55@tcp(topdawg.circlepix.com:3306)/topdawg?parseTime=true")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	rows, err := db.Query("SELECT PlayerID, TeamID, PositionID, FirstName, LastName, IsActive, NFLGameStatsID FROM Player")
+	rows, err := db.Query("SELECT PlayerID, TeamID, PositionID, FirstName, LastName, IsActive, NFLGameStatsID FROM Player WHERE isActive = 1")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,11 +35,15 @@ func main() {
 
 		fmt.Printf("PlayerID : [%d], TeamID : [%d], PositionID : [%d], First : [%s], Last : [%s], Active : [%d], StatsId : [%s]\n", playerid, teamid, positionid, firstname, lastname, isactive, statsid)
 
+		status := "active"
+		if isactive == 0 {
+			status = "inactive"
+		}
 		player := dbplayer.Player{
 			PlayerID:  playerid,
 			FirstName: firstname,
 			LastName:  lastname,
-			Active:    isactive,
+			Status:    status,
 			StatsKey:  statsid,
 		}
 

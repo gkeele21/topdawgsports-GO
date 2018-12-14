@@ -1,8 +1,8 @@
 package dbplayer
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type Player struct {
@@ -12,7 +12,7 @@ type Player struct {
 	PositionID   database.NullInt64  `db:"position_id"`
 	FirstName    database.NullString `db:"first_name"`
 	LastName     database.NullString `db:"last_name"`
-	Active       int64               `db:"active"`
+	Status       string              `db:"status"`
 	StatsKey     database.NullString `db:"stats_key"`
 }
 

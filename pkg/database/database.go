@@ -87,6 +87,7 @@ func QueryContext(ctx context.Context, query string, args ...interface{}) (*sql.
 }
 
 // QueryRowContext executes a query that is expected to return at most one row.
+
 // QueryRowContext always returns a non-nil value. Errors are deferred until
 // Row's Scan method is called.
 // If the query selects no rows, the *Row's Scan will return ErrNoRows.

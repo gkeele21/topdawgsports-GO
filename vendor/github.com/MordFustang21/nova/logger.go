@@ -7,10 +7,7 @@ package nova
 
 import (
 	"fmt"
-	"os"
-	"syscall"
 	"time"
-	"unsafe"
 )
 
 var (
@@ -38,10 +35,10 @@ func getDebugMethod(r *Request) func() {
 		method := r.GetMethod()
 		statusCode := r.ResponseCode
 		var statusColor, methodColor string
-		if isTerminal(os.Stdin.Fd()) {
-			statusColor = colorForStatus(statusCode)
-			methodColor = colorForMethod(method)
-		}
+		//if isTerminal(os.Stdin.Fd()) {
+		//	statusColor = colorForStatus(statusCode)
+		//	methodColor = colorForMethod(method)
+		//}
 
 		fmt.Printf("[Nova] %v |%s %3d %s| %13v | %s |%s  %s %-7s %s\n",
 			end.Format("2006/01/02 - 15:04:05"),
@@ -55,11 +52,11 @@ func getDebugMethod(r *Request) func() {
 }
 
 // IsTerminal returns true if the given file descriptor is a terminal.
-func isTerminal(fd uintptr) bool {
-	var termios syscall.Termios
-	_, _, err := syscall.Syscall6(syscall.SYS_IOCTL, fd, 0x5401, uintptr(unsafe.Pointer(&termios)), 0, 0, 0)
-	return err == 0
-}
+//func isTerminal(fd uintptr) bool {
+//	var termios syscall.Termios
+//	_, _, err := syscall.Syscall6(syscall.SYS_IOCTL, fd, 0x5401, uintptr(unsafe.Pointer(&termios)), 0, 0, 0)
+//	return err == 0
+//}
 
 func colorForStatus(code int) string {
 	switch {

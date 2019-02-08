@@ -12,12 +12,11 @@ type SportLevel struct {
 }
 
 type SportLevelFull struct {
-	SportLevelID int64              `db:"sport_level_id"`
-	SportID      int64              `db:"sport_id"`
-	SportLevel   string             `db:"level"`
-	SportName    string             `db:"name"`
+	SportLevelID int64  `db:"sport_level_id"`
+	SportID      int64  `db:"sport_id"`
+	SportLevel   string `db:"level"`
+	SportName    string `db:"name"`
 }
-
 
 // ReadByID reads by id column
 func ReadByID(ID int64) (*SportLevel, error) {

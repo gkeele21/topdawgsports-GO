@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"topdawgsportsAPI/cmd/server/api/handler"
 	"topdawgsportsAPI/cmd/server/api/handler/user"
@@ -14,6 +15,7 @@ import (
 
 func main() {
 	// Router
+	fmt.Println("API Server now running...")
 	s := nova.New()
 
 	s.Error(func(req *nova.Request, err error) {

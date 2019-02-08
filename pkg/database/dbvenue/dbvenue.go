@@ -1,8 +1,8 @@
 package dbvenue
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type Venue struct {

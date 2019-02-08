@@ -1,8 +1,8 @@
 package dbfantasyleaguepayout
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type FantasyLeaguePayout struct {

@@ -3,14 +3,14 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
+	"os"
 	"topdawgsportsAPI/pkg/database"
 	"topdawgsportsAPI/pkg/database/dbfantasyheadtoheadstandings"
 	"topdawgsportsAPI/pkg/database/dbfantasysalarystandings"
-	"topdawgsportsAPI/pkg/database/dbpickemstandings"
-	"os"
 	"topdawgsportsAPI/pkg/database/dbloveemstandings"
+	"topdawgsportsAPI/pkg/database/dbpickemstandings"
 )
 
 var db *sql.DB
@@ -55,14 +55,14 @@ func main() {
 				TotalFantasyPts:        totalfantasypts,
 				WeekFantasyPtsAgainst:  fantasyptsagainst,
 				TotalFantasyPtsAgainst: totalfantasyptsagainst,
-				Wins:                   wins.Int64,
-				Losses:                 losses.Int64,
-				Ties:                   ties.Int64,
-				WeekHiScore:            hiscore,
-				TotalHiScore:           totalhiscores,
-				LeagueRanking:          rank,
-				CurrentStreak:          currentstreak,
-				LastFive:               lastfive,
+				Wins:          wins.Int64,
+				Losses:        losses.Int64,
+				Ties:          ties.Int64,
+				WeekHiScore:   hiscore,
+				TotalHiScore:  totalhiscores,
+				LeagueRanking: rank,
+				CurrentStreak: currentstreak,
+				LastFive:      lastfive,
 			}
 
 			fmt.Printf("Record : %#v\n", div)

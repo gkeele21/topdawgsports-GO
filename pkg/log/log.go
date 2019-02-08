@@ -3,10 +3,10 @@ package log
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/MordFustang21/nova"
 	"log"
 	"os"
 	"time"
-	"github.com/MordFustang21/nova"
 )
 
 var l = log.New(os.Stderr, "", 0)

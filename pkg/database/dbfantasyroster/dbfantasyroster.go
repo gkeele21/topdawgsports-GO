@@ -1,8 +1,8 @@
 package dbfantasyroster
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type FantasyRoster struct {

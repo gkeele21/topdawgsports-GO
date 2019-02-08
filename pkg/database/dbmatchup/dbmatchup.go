@@ -1,8 +1,8 @@
 package dbmatchup
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type Matchup struct {

@@ -3,11 +3,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	_ "github.com/go-sql-driver/mysql"
-	"topdawgsportsAPI/pkg/database"
-	"time"
+	"log"
 	"strings"
+	"time"
+	"topdawgsportsAPI/pkg/database"
 	"topdawgsportsAPI/pkg/database/dbfantasywaiverwirerequest"
 )
 

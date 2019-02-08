@@ -1,8 +1,8 @@
 package dbteam
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type Team struct {

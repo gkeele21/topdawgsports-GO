@@ -1,8 +1,8 @@
 package dbfantasysettingoption
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type FantasySettingOption struct {

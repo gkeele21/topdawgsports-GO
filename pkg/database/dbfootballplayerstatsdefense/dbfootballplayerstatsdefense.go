@@ -1,8 +1,8 @@
 package dbfootballplayerstatsdefense
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type FootballPlayerStatsDefense struct {

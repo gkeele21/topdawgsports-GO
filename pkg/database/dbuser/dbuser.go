@@ -1,9 +1,9 @@
 package dbuser
 
 import (
-	"topdawgsportsAPI/pkg/database"
-	"time"
 	"fmt"
+	"time"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type User struct {

@@ -1,8 +1,8 @@
 package dbfantasyschedulebase
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type FantasyScheduleBase struct {

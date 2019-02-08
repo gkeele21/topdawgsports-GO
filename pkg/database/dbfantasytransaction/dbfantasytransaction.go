@@ -1,9 +1,9 @@
 package dbfantasytransaction
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
 	"time"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type FantasyTransaction struct {

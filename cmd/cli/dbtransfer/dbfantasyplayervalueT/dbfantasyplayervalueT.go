@@ -3,8 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
 	"topdawgsportsAPI/pkg/database/dbfantasyplayervalue"
 )
 
@@ -35,9 +35,9 @@ func main() {
 		fmt.Printf("PlayerID : [%d], Value : [%d]\n", playerid, value)
 
 		div := dbfantasyplayervalue.FantasyPlayerValue{
-			PlayerID: playerid,
-			WeekID:   fsseasonweekid,
-			Value:    value,
+			PlayerID:      playerid,
+			WeekID:        fsseasonweekid,
+			Value:         value,
 			FantasyGameID: 2,
 		}
 

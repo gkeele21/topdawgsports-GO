@@ -3,8 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	_ "github.com/go-sql-driver/mysql"
+	"log"
 	"topdawgsportsAPI/pkg/database"
 	"topdawgsportsAPI/pkg/database/dbpickempick"
 )
@@ -35,10 +35,10 @@ func main() {
 		fmt.Printf("FSSeasonWeekID : [%d], FSTeamID : [%d], GameID : [%d]\n", fsseasonweekid, fsteamid, gameid)
 
 		div := dbpickempick.PickEmPick{
-			FantasyTeamID:    fsteamid,
-			WeekID:           fsseasonweekid,
-			MatchupID:        gameid,
-			TeamPickedID:     teampickedid,
+			FantasyTeamID: fsteamid,
+			WeekID:        fsseasonweekid,
+			MatchupID:     gameid,
+			TeamPickedID:  teampickedid,
 		}
 
 		if confidencepts.Int64 > 0 {

@@ -1,9 +1,9 @@
 package dbfantasywaiverwirerequest
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
 	"time"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type FantasyWaiverWireRequest struct {

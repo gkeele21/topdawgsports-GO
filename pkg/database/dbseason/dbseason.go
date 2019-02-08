@@ -101,3 +101,16 @@ func Insert(s *Season) error {
 
 	return nil
 }
+
+// Update will update a record in the database
+func Update(s *Season) error {
+	sql := database.BuildUpdate("season", s)
+	fmt.Printf("Season Update sql : %s", sql)
+	_, err := database.Exec(database.BuildInsert("season", s), database.GetArgumentsForUpdate(*s)...)
+
+	if err != nil {
+		return fmt.Errorf("season: couldn't update %s", err)
+	}
+
+	return nil
+}

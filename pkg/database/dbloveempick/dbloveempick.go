@@ -1,8 +1,8 @@
 package dbloveempick
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type LoveEmPick struct {

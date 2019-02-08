@@ -1,8 +1,8 @@
 package dbteamconferenceyear
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type TeamConferenceYear struct {

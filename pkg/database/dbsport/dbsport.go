@@ -1,8 +1,8 @@
 package dbsport
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type Sport struct {

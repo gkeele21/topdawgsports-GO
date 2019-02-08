@@ -1,8 +1,8 @@
 package dbfantasygametype
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type FantasyGameType struct {

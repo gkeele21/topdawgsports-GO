@@ -32,8 +32,8 @@ func connect() {
 		//username := "webuser"
 		//password := "lakers55"
 		readHost := "localhost"
-		username := "root"
-		password := "laker.1"
+		username := "topdawguser"
+		password := "lakers55"
 
 		if readHost == "" || username == "" || password == "" {
 			log.Fatal("invalid db config env variables not set")
@@ -131,6 +131,19 @@ func GetArguments(s interface{}) []interface{} {
 	return args
 }
 
+// GetArgumentsForUpdate receives a struct and puts the struct values
+// into an array so that it can be passed into a query
+func GetArgumentsForUpdate(s interface{}) []interface{} {
+	var args []interface{}
+	val := reflect.ValueOf(s)
+	for i := 1; i < val.NumField(); i++ {
+		args = append(args, val.Field(i).Interface())
+	}
+	args = append(args, val.Field(0).Interface())
+
+	return args
+}
+
 // BuildInsert creates an insert query for given table name and accompanying struct
 // returning a query string with placeholders ? for mysql
 func BuildInsert(tableName string, obj interface{}) string {
@@ -161,6 +174,32 @@ func BuildInsert(tableName string, obj interface{}) string {
 	query += strings.Join(argsHolder, ",")
 
 	query += ")"
+
+	return query
+}
+
+// BuildUpdate creates an update query for given table name and accompanying struct
+// returning a query string with placeholders ? for mysql
+func BuildUpdate(tableName string, obj interface{}) string {
+	// build start
+	query := fmt.Sprintf("UPDATE %s SET ", tableName)
+
+	val := reflect.ValueOf(obj)
+	i := reflect.Indirect(val)
+	t := i.Type()
+
+	// skip the primary key column
+	for i := 1; i < t.NumField(); i++ {
+		if i > 1 {
+			query += ", "
+		}
+		name := t.Field(i).Tag.Get("db")
+		if name != "" {
+			query += name + " = ? "
+		}
+	}
+
+	query += " WHERE " + t.Field(0).Tag.Get("db") + " = ?"
 
 	return query
 }

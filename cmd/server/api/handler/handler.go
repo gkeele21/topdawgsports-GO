@@ -14,6 +14,6 @@ func RegisterRoutes(s *nova.Server) {
 func healthCheck(req *nova.Request) error {
 	//req.StatusCode(http.StatusOK)
 
-	return req.JSON(http.StatusOK,"ok")
+	return req.JSON(http.StatusOK, "ok")
 	//return req.Send("ok")
 }

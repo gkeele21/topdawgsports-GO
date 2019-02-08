@@ -12,4 +12,3 @@ func TestReadByID(t *testing.T) {
 		t.Error("Username isn't correct")
 	}
 }
-

@@ -1,8 +1,8 @@
 package dbfantasywaiverwireorder
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type FantasyWaiverWireOrder struct {

@@ -1,8 +1,8 @@
 package dbbracketchallengestandings
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type BracketChallengeStandings struct {

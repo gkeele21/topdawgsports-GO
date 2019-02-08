@@ -12,8 +12,8 @@ import (
 	"strconv"
 
 	"github.com/go-sql-driver/mysql"
-	"time"
 	"reflect"
+	"time"
 )
 
 // NullString is a wrapper for sql.NullString for JSON methods to remove Valid

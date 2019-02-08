@@ -1,8 +1,8 @@
 package dbweek
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type Week struct {

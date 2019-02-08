@@ -3,10 +3,10 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	_ "github.com/go-sql-driver/mysql"
-	"topdawgsportsAPI/pkg/database/dbfootballplayerstats"
+	"log"
 	"topdawgsportsAPI/pkg/database"
+	"topdawgsportsAPI/pkg/database/dbfootballplayerstats"
 )
 
 var db *sql.DB

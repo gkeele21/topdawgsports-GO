@@ -1,8 +1,8 @@
 package dbposition
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type Position struct {

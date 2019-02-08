@@ -5,14 +5,24 @@ import (
 	"github.com/MordFustang21/nova"
 	"net/http"
 	"strconv"
+	"topdawgsportsAPI/pkg/database"
 	"topdawgsportsAPI/pkg/database/dbfantasyleague"
 	"topdawgsportsAPI/pkg/database/dbseason"
 	"topdawgsportsAPI/pkg/log"
 )
 
+type SeasonData struct {
+	SeasonId     int64
+	Name         string
+	Status       string
+	SportLevelId int64
+	StartingYear database.NullInt64
+}
+
 // RegisterRoutes sets up routs on a given nova.Server instance
 func RegisterRoutes(s *nova.Server) {
 	s.Get("/seasons/:seasonId", getSeasonByID)
+	s.Put("/seasons/:seasonId", saveSeasonByID)
 	s.Get("/seasons", getSeasons)
 	s.Get("/seasons/:seasonId/games/:gameId/leagues", getSeasonGameLeagues)
 }
@@ -49,6 +59,45 @@ func getSeasonByID(req *nova.Request) error {
 
 		return req.JSON(http.StatusOK, s)
 	}
+}
+
+// saveSeasonByID searches for a single season by seasonid from the route parameter :seasonId and saves it with the data passed in
+func saveSeasonByID(req *nova.Request) error {
+	var err error
+
+	log.LogRequest(req)
+
+	var tempSeason SeasonData
+	err = req.ReadJSON(&tempSeason)
+	if err != nil {
+		return req.Error(http.StatusBadRequest, "bad season data passed in")
+	}
+
+	searchID := req.RouteParam("seasonId")
+	num, err := strconv.ParseInt(searchID, 10, 64)
+	if err != nil {
+		return req.Error(http.StatusBadRequest, "bad season ID given")
+	}
+
+	var s *dbseason.Season
+	// TODO: after grabbing values from db, update columns that have been passed in to us
+	s, err = dbseason.ReadByID(num)
+
+	if err != nil {
+		return req.Error(http.StatusInternalServerError, "couldn't get season", err)
+	}
+
+	if tempSeason.Name != "" {
+		s.Name = tempSeason.Name
+	}
+
+	s.Status = tempSeason.Status
+	s.StartingYear = tempSeason.StartingYear
+	s.SportLevelID = tempSeason.SportLevelId
+
+	dbseason.Update(s)
+
+	return req.JSON(http.StatusOK, s)
 }
 
 // getSeasons grabs all seasons

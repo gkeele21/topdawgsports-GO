@@ -1,8 +1,8 @@
 package dbteamstandings
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type TeamStandings struct {

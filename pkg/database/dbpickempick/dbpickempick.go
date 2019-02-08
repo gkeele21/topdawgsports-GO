@@ -1,8 +1,8 @@
 package dbpickempick
 
 import (
-	"topdawgsportsAPI/pkg/database"
 	"fmt"
+	"topdawgsportsAPI/pkg/database"
 )
 
 type PickEmPick struct {

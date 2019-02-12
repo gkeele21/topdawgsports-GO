@@ -16,13 +16,13 @@ type SeasonData struct {
 	Name         string
 	Status       string
 	SportLevelId int64
-	StartingYear database.NullInt64
+	StartingYear int64
 }
 
 // RegisterRoutes sets up routs on a given nova.Server instance
 func RegisterRoutes(s *nova.Server) {
 	s.Get("/seasons/:seasonId", getSeasonByID)
-	s.Put("/seasons/:seasonId", saveSeasonByID)
+	s.Post("/seasons/:seasonId", saveSeasonByID)
 	s.Get("/seasons", getSeasons)
 	s.Get("/seasons/:seasonId/games/:gameId/leagues", getSeasonGameLeagues)
 }
@@ -63,25 +63,27 @@ func getSeasonByID(req *nova.Request) error {
 
 // saveSeasonByID searches for a single season by seasonid from the route parameter :seasonId and saves it with the data passed in
 func saveSeasonByID(req *nova.Request) error {
+	fmt.Println("In saveSeasonById")
 	var err error
 
 	log.LogRequest(req)
 
 	var tempSeason SeasonData
 	err = req.ReadJSON(&tempSeason)
+	fmt.Printf("TempSeason : %#v\n", tempSeason)
 	if err != nil {
 		return req.Error(http.StatusBadRequest, "bad season data passed in")
 	}
 
 	searchID := req.RouteParam("seasonId")
-	num, err := strconv.ParseInt(searchID, 10, 64)
+	seasonId, err := strconv.ParseInt(searchID, 10, 64)
 	if err != nil {
 		return req.Error(http.StatusBadRequest, "bad season ID given")
 	}
 
 	var s *dbseason.Season
 	// TODO: after grabbing values from db, update columns that have been passed in to us
-	s, err = dbseason.ReadByID(num)
+	s, err = dbseason.ReadByID(seasonId)
 
 	if err != nil {
 		return req.Error(http.StatusInternalServerError, "couldn't get season", err)
@@ -92,10 +94,16 @@ func saveSeasonByID(req *nova.Request) error {
 	}
 
 	s.Status = tempSeason.Status
-	s.StartingYear = tempSeason.StartingYear
+	if tempSeason.StartingYear > 0 {
+		s.StartingYear = database.ToNullInt(tempSeason.StartingYear, false)
+	}
 	s.SportLevelID = tempSeason.SportLevelId
 
-	dbseason.Update(s)
+	fmt.Printf("Season data to update: %#v\n", s)
+	ret := dbseason.Update(s)
+	if ret != nil {
+		return req.Error(http.StatusBadRequest, ret.Error())
+	}
 
 	return req.JSON(http.StatusOK, s)
 }

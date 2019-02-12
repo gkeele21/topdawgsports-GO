@@ -19,8 +19,10 @@ func main() {
 	s := nova.New()
 
 	s.Error(func(req *nova.Request, err error) {
-
+		fmt.Println("In Main error")
 	})
+
+	s.EnableDebug(true)
 
 	// Middleware
 	middleware.Register(s)

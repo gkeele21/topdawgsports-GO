@@ -2,6 +2,7 @@ package user
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"github.com/MordFustang21/nova"
 	"net/http"
@@ -21,7 +22,7 @@ type newUserForm struct {
 	Cell      string
 }
 
-// RegisterRoutes sets up routs on a given nova.Server instance
+// RegisterRoutes sets up routes on a given nova.Server instance
 func RegisterRoutes(s *nova.Server) {
 	s.Get("/users/:userId", getUserByID)
 	s.Get("/users", getUsers)
@@ -37,7 +38,7 @@ func RegisterRoutes(s *nova.Server) {
 func getUserByID(req *nova.Request) error {
 	var err error
 
-	log.LogRequest(req)
+	log.LogRequestData(req)
 	searchID := req.RouteParam("userId")
 	num, err := strconv.ParseInt(searchID, 10, 64)
 	if err != nil {
@@ -56,7 +57,7 @@ func getUserByID(req *nova.Request) error {
 
 // getUsers grabs all users
 func getUsers(req *nova.Request) error {
-	log.LogRequest(req)
+	log.LogRequestData(req)
 	users, err := dbuser.ReadAll()
 	if err != nil {
 		return req.Error(http.StatusInternalServerError, "couldn't find users", err)
@@ -67,17 +68,16 @@ func getUsers(req *nova.Request) error {
 
 // newUser creates a new user
 func newUser(req *nova.Request) error {
-	log.LogRequest(req)
+	//err := req.ParseForm()
+	log.LogRequestData(req)
 
-	u := newUserForm{}
-
-	err := req.ReadJSON(&u)
+	var u newUserForm
+	err := json.NewDecoder(req.Body).Decode(&u)
 	if err != nil {
-		fmt.Printf("ERROR : %#v\n", err)
-		return req.Error(http.StatusBadRequest, "invalid json body provided for login form", err)
+		return req.Error(http.StatusInternalServerError, err.Error(), 400)
 	}
 
-	log.LogRequestData(u)
+	fmt.Printf("User (populated) : %#v \n", u)
 
 	// Check for required params
 	if u.FirstName == "" || u.Email == "" || u.Password == "" {

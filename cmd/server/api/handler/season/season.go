@@ -1,6 +1,7 @@
 package season
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/MordFustang21/nova"
 	"net/http"
@@ -19,7 +20,7 @@ type SeasonData struct {
 	StartingYear int64
 }
 
-// RegisterRoutes sets up routs on a given nova.Server instance
+// RegisterRoutes sets up routes on a given nova.Server instance
 func RegisterRoutes(s *nova.Server) {
 	s.Get("/seasons/:seasonId", getSeasonByID)
 	s.Post("/seasons/:seasonId", saveSeasonByID)
@@ -31,7 +32,7 @@ func RegisterRoutes(s *nova.Server) {
 func getSeasonByID(req *nova.Request) error {
 	var err error
 
-	log.LogRequest(req)
+	log.LogRequestData(req)
 	searchID := req.RouteParam("seasonId")
 	num, err := strconv.ParseInt(searchID, 10, 64)
 	if err != nil {
@@ -63,17 +64,9 @@ func getSeasonByID(req *nova.Request) error {
 
 // saveSeasonByID searches for a single season by seasonid from the route parameter :seasonId and saves it with the data passed in
 func saveSeasonByID(req *nova.Request) error {
-	fmt.Println("In saveSeasonById")
 	var err error
-
-	log.LogRequest(req)
-
-	var tempSeason SeasonData
-	err = req.ReadJSON(&tempSeason)
-	fmt.Printf("TempSeason : %#v\n", tempSeason)
-	if err != nil {
-		return req.Error(http.StatusBadRequest, "bad season data passed in")
-	}
+	// Print a copy of this request for debugging.
+	log.LogRequestData(req)
 
 	searchID := req.RouteParam("seasonId")
 	seasonId, err := strconv.ParseInt(searchID, 10, 64)
@@ -82,12 +75,23 @@ func saveSeasonByID(req *nova.Request) error {
 	}
 
 	var s *dbseason.Season
-	// TODO: after grabbing values from db, update columns that have been passed in to us
 	s, err = dbseason.ReadByID(seasonId)
 
 	if err != nil {
 		return req.Error(http.StatusInternalServerError, "couldn't get season", err)
 	}
+
+	if req.Body == nil {
+		return req.Error(http.StatusInternalServerError, "Please send a request body", 400)
+	}
+
+	var tempSeason SeasonData
+	err = json.NewDecoder(req.Body).Decode(&tempSeason)
+	if err != nil {
+		return req.Error(http.StatusInternalServerError, err.Error(), 400)
+	}
+
+	fmt.Printf("TempSeason : %#v\n", tempSeason)
 
 	if tempSeason.Name != "" {
 		s.Name = tempSeason.Name
@@ -110,7 +114,7 @@ func saveSeasonByID(req *nova.Request) error {
 
 // getSeasons grabs all seasons
 func getSeasons(req *nova.Request) error {
-	log.LogRequest(req)
+	log.LogRequestData(req)
 	orderBy := req.QueryParam("orderBy")
 	orderByAsc := req.QueryParam("orderByAsc")
 	includeSportLevels := req.QueryParam("includeSportLevels")
@@ -128,7 +132,6 @@ func getSeasons(req *nova.Request) error {
 		orderBy = ""
 	}
 
-	fmt.Printf("OrderBy %s ", orderBy)
 	if includeSportLevels == "true" {
 		seasons, err := dbseason.ReadAllWithSportLevel(orderBy)
 		if err != nil {
@@ -149,7 +152,7 @@ func getSeasons(req *nova.Request) error {
 
 // getSeasonGameLeagues grabs all fantasy_leagues for the given seasonId and gameId
 func getSeasonGameLeagues(req *nova.Request) error {
-	log.LogRequest(req)
+	log.LogRequestData(req)
 	tempSeasonID := req.RouteParam("seasonId")
 	seasonID, err := strconv.ParseInt(tempSeasonID, 10, 64)
 	if err != nil {
@@ -176,7 +179,6 @@ func getSeasonGameLeagues(req *nova.Request) error {
 		orderBy = ""
 	}
 
-	fmt.Printf("OrderBy %s ", orderBy)
 	leagues, err := dbfantasyleague.ReadAllBySeasonIDFantasyGameID(seasonID, gameID, orderBy)
 	if err != nil {
 		return req.Error(http.StatusInternalServerError, "couldn't find leagues with the season id.", err)

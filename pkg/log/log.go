@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"github.com/MordFustang21/nova"
 	"log"
+	"net/http/httputil"
 	"os"
+	"runtime"
 	"time"
 )
 
@@ -48,6 +50,18 @@ func LogRequest(req *nova.Request) {
 	fmt.Printf("%s : %#v\n", time.Now().Format("Mon Jan 2 15:04:05 -0700 MST 2006"), req)
 }
 
-func LogRequestData(object interface{}) {
-	fmt.Printf("%s : Data Passed : %#v\n", time.Now().Format("Mon Jan 2 15:04:05 -0700 MST 2006"), object)
+func LogRequestData(req *nova.Request) {
+	fmt.Printf("==== Request Dump %s ====\n", time.Now().Format("Mon Jan 2 15:04:05 -0700 MST 2006"))
+	function, _, _, _ := runtime.Caller(1)
+	fmt.Printf("Caller : %#v\n", runtime.FuncForPC(function).Name())
+	includeBody := true
+	if req.Body == nil {
+		includeBody = false
+	}
+	requestDump, err := httputil.DumpRequest(req.Request, includeBody)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(requestDump))
+	fmt.Println("==== End Request Dump ====")
 }

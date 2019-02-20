@@ -1,7 +1,6 @@
 package sportlevel
 
 import (
-	"fmt"
 	"github.com/MordFustang21/nova"
 	"net/http"
 	"strconv"
@@ -9,7 +8,7 @@ import (
 	"topdawgsportsAPI/pkg/log"
 )
 
-// RegisterRoutes sets up routs on a given nova.Server instance
+// RegisterRoutes sets up routes on a given nova.Server instance
 func RegisterRoutes(s *nova.Server) {
 	s.Get("/sportlevels/:sportLevelId", getSportLevelByID)
 	s.Get("/sportlevels", getSportLevels)
@@ -19,7 +18,7 @@ func RegisterRoutes(s *nova.Server) {
 func getSportLevelByID(req *nova.Request) error {
 	var err error
 
-	log.LogRequest(req)
+	log.LogRequestData(req)
 	searchID := req.RouteParam("sportLevelId")
 	num, err := strconv.ParseInt(searchID, 10, 64)
 	if err != nil {
@@ -38,7 +37,7 @@ func getSportLevelByID(req *nova.Request) error {
 
 // getSportLevels grabs all sportlevels
 func getSportLevels(req *nova.Request) error {
-	log.LogRequest(req)
+	log.LogRequestData(req)
 	orderBy := req.QueryParam("orderBy")
 	orderByAsc := req.QueryParam("orderByAsc")
 
@@ -55,7 +54,6 @@ func getSportLevels(req *nova.Request) error {
 		orderBy = ""
 	}
 
-	fmt.Printf("OrderBy %s ", orderBy)
 	sportlevels, err := dbsportlevel.ReadAllFull(orderBy)
 	if err != nil {
 		return req.Error(http.StatusInternalServerError, "couldn't find sportlevels", err)

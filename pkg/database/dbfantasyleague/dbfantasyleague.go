@@ -76,7 +76,6 @@ func ReadAllBySeasonIDFantasyGameID(seasonID, gameID int64, orderBy string) ([]F
 		orderBy = "fantasy_league_id asc"
 	}
 	err := database.Select(&recs, "SELECT * FROM fantasy_league WHERE season_id = ? AND fantasy_game_id = ? ORDER BY "+orderBy, seasonID, gameID)
-	fmt.Printf("SELECT * FROM fantasy_league WHERE season_id = ? AND fantasy_game_id = ? ORDER BY "+orderBy, seasonID, gameID)
 	if err != nil {
 		return nil, err
 	}

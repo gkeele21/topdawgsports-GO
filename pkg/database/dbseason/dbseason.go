@@ -108,7 +108,6 @@ func Update(s *Season) error {
 	_, err := database.Exec(sql, database.GetArgumentsForUpdate(*s)...)
 
 	if err != nil {
-		fmt.Printf("Error : %s\n", err)
 		return fmt.Errorf("season: couldn't update %s", err)
 	}
 

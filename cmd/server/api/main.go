@@ -22,7 +22,7 @@ func main() {
 		fmt.Println("In Main error")
 	})
 
-	s.EnableDebug(true)
+	s.EnableDebug(false)
 
 	// Middleware
 	middleware.Register(s)

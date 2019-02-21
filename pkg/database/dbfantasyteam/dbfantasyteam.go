@@ -65,3 +65,18 @@ func Insert(d *FantasyTeam) error {
 
 	return nil
 }
+
+// ReadAllByFantasyLeagueID reads all fantasy_teams in the database for the given fantasyLeagueID
+func ReadAllByFantasyLeagueID(fantasyLeagueID int64, orderBy string) ([]FantasyTeam, error) {
+	var recs []FantasyTeam
+	if orderBy == "" {
+		orderBy = "fantasy_team_id asc"
+	}
+	err := database.Select(&recs, "SELECT * FROM fantasy_team WHERE fantasy_league_id = ? ORDER BY "+orderBy, fantasyLeagueID)
+	if err != nil {
+		return nil, err
+	}
+
+	return recs, nil
+}
+

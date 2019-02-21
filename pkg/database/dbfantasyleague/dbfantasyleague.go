@@ -69,6 +69,19 @@ func Insert(d *FantasyLeague) error {
 	return nil
 }
 
+// Update will update a record in the database
+func Update(s *FantasyLeague) error {
+	sql := database.BuildUpdate("fantasy_league", s)
+	_, err := database.Exec(sql, database.GetArgumentsForUpdate(*s)...)
+
+	if err != nil {
+		return fmt.Errorf("season: couldn't update %s", err)
+	}
+
+	return nil
+}
+
+
 // ReadAllBySeasonID_FantasyGameID reads all fantasy_leagues in the database for the given seasonID and gameID
 func ReadAllBySeasonIDFantasyGameID(seasonID, gameID int64, orderBy string) ([]FantasyLeague, error) {
 	var recs []FantasyLeague

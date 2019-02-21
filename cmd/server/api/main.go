@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"topdawgsportsAPI/cmd/server/api/handler"
+	"topdawgsportsAPI/cmd/server/api/handler/fantasyleague"
 	"topdawgsportsAPI/cmd/server/api/handler/user"
 	"topdawgsportsAPI/cmd/server/api/middleware"
 
@@ -35,7 +36,8 @@ func main() {
 
 func registerHandlers(s *nova.Server) {
 	handler.RegisterRoutes(s)
-	user.RegisterRoutes(s)
+	fantasyleague.RegisterRoutes(s)
 	season.RegisterRoutes(s)
 	sportlevel.RegisterRoutes(s)
+	user.RegisterRoutes(s)
 }

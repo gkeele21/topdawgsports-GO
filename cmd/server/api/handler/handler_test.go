@@ -1,18 +1,17 @@
 package handler
 
 import (
+	"github.com/labstack/echo"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/MordFustang21/nova"
 )
 
 func Test_healthCheck(t *testing.T) {
-	m := nova.New()
-	m.Get("/healthcheck", healthCheck)
+	e := echo.New()
+	e.GET("/healthcheck", healthCheck)
 
-	ts := httptest.NewServer(m)
+	ts := httptest.NewServer(e)
 	defer ts.Close()
 
 	res, err := http.Get(ts.URL + "/healthcheck")

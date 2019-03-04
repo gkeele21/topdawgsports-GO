@@ -2,8 +2,8 @@ package dbfantasyteam
 
 import (
 	"fmt"
+	"github.com/gkeele21/topdawgsportsAPI/pkg/database"
 	"time"
-	"topdawgsportsAPI/pkg/database"
 )
 
 type FantasyTeam struct {
@@ -79,4 +79,3 @@ func ReadAllByFantasyLeagueID(fantasyLeagueID int64, orderBy string) ([]FantasyT
 
 	return recs, nil
 }
-

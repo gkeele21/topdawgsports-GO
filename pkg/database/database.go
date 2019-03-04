@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 	"reflect"
 	"strings"
 	"sync"
@@ -24,22 +25,17 @@ func connect() {
 		var err error
 
 		// Create db instance
-		//readHost := os.Getenv("DB_READ")
-		//username := os.Getenv("DB_USERNAME")
-		//password := os.Getenv("DB_PASSWORD")
+		host := os.Getenv("TOPDAWG_DB_READ_HOST")
+		username := os.Getenv("TOPDAWG_DB_USERNAME")
+		password := os.Getenv("TOPDAWG_DB_PASSWORD")
+		dbName := os.Getenv("TOPDAWG_DB_NAME")
+		dbPort := os.Getenv("TOPDAWG_DB_PORT")
 
-		//readHost := "topdawg.circlepix.com"
-		//username := "webuser"
-		//password := "lakers55"
-		readHost := "localhost"
-		username := "topdawguser"
-		password := "lakers55"
-
-		if readHost == "" || username == "" || password == "" {
-			log.Fatal("invalid db config env variables not set")
+		if host == "" || username == "" || password == "" || host == "" {
+			log.Fatal("invalid db config : env variables not set [TOPDAWG_DB_READ_HOST] [TOPDAWG_DB_USERNAME] [TOPDAWG_DB_PASSWORD] [TOPDAWG_DB_NAME]")
 		}
 
-		currentInstance.read, err = sqlx.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?parseTime=true&loc=MST7MDT", username, password, readHost, "sportsnew"))
+		currentInstance.read, err = sqlx.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&loc=MST7MDT", username, password, host, dbPort, dbName))
 		if err != nil {
 			log.Fatal("invalid db config: ", err)
 		}

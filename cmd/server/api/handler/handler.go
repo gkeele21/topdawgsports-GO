@@ -1,19 +1,15 @@
 package handler
 
 import (
+	"github.com/labstack/echo"
 	"net/http"
-
-	"github.com/MordFustang21/nova"
 )
 
 // RegisterRoutes adds routes to provided mux
-func RegisterRoutes(s *nova.Server) {
-	s.Get("/health", healthCheck)
+func RegisterRoutes(e *echo.Echo) {
+	e.GET("/health", healthCheck)
 }
 
-func healthCheck(req *nova.Request) error {
-	//req.StatusCode(http.StatusOK)
-
-	return req.JSON(http.StatusOK, "ok")
-	//return req.Send("ok")
+func healthCheck(c echo.Context) error {
+	return c.String(http.StatusOK, "ok")
 }

@@ -55,14 +55,14 @@ func main() {
 				TotalFantasyPts:        totalfantasypts,
 				WeekFantasyPtsAgainst:  fantasyptsagainst,
 				TotalFantasyPtsAgainst: totalfantasyptsagainst,
-				Wins:          wins.Int64,
-				Losses:        losses.Int64,
-				Ties:          ties.Int64,
-				WeekHiScore:   hiscore,
-				TotalHiScore:  totalhiscores,
-				LeagueRanking: rank,
-				CurrentStreak: currentstreak,
-				LastFive:      lastfive,
+				Wins:                   wins.Int64,
+				Losses:                 losses.Int64,
+				Ties:                   ties.Int64,
+				WeekHiScore:            hiscore,
+				TotalHiScore:           totalhiscores,
+				LeagueRanking:          rank,
+				CurrentStreak:          currentstreak,
+				LastFive:               lastfive,
 			}
 
 			fmt.Printf("Record : %#v\n", div)

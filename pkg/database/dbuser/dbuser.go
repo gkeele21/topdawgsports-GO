@@ -2,8 +2,8 @@ package dbuser
 
 import (
 	"fmt"
+	"github.com/gkeele21/topdawgsportsAPI/pkg/database"
 	"time"
-	"topdawgsportsAPI/pkg/database"
 )
 
 type User struct {

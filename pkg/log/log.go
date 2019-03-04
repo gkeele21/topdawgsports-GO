@@ -3,7 +3,7 @@ package log
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/MordFustang21/nova"
+	"github.com/labstack/echo"
 	"log"
 	"net/http/httputil"
 	"os"
@@ -46,19 +46,15 @@ func Println(logType, message string, args ...interface{}) {
 	l.Println(string(data))
 }
 
-func LogRequest(req *nova.Request) {
-	fmt.Printf("%s : %#v\n", time.Now().Format("Mon Jan 2 15:04:05 -0700 MST 2006"), req)
-}
-
-func LogRequestData(req *nova.Request) {
+func LogRequestData(req echo.Context) {
 	fmt.Printf("==== Request Dump %s ====\n", time.Now().Format("Mon Jan 2 15:04:05 -0700 MST 2006"))
 	function, _, _, _ := runtime.Caller(1)
 	fmt.Printf("Caller : %#v\n", runtime.FuncForPC(function).Name())
 	includeBody := true
-	if req.Body == nil {
+	if req == nil {
 		includeBody = false
 	}
-	requestDump, err := httputil.DumpRequest(req.Request, includeBody)
+	requestDump, err := httputil.DumpRequest(req.Request(), includeBody)
 	if err != nil {
 		fmt.Println(err)
 	}

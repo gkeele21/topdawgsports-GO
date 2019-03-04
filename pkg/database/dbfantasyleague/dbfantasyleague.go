@@ -2,8 +2,8 @@ package dbfantasyleague
 
 import (
 	"fmt"
+	"github.com/gkeele21/topdawgsportsAPI/pkg/database"
 	"time"
-	"topdawgsportsAPI/pkg/database"
 )
 
 type FantasyLeague struct {
@@ -80,7 +80,6 @@ func Update(s *FantasyLeague) error {
 
 	return nil
 }
-
 
 // ReadAllBySeasonID_FantasyGameID reads all fantasy_leagues in the database for the given seasonID and gameID
 func ReadAllBySeasonIDFantasyGameID(seasonID, gameID int64, orderBy string) ([]FantasyLeague, error) {

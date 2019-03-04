@@ -1,32 +1,31 @@
 package fantasyleague
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/MordFustang21/nova"
+	"github.com/gkeele21/topdawgsportsAPI/pkg/database/dbfantasyleague"
+	"github.com/gkeele21/topdawgsportsAPI/pkg/database/dbfantasyteam"
+	"github.com/gkeele21/topdawgsportsAPI/pkg/log"
+	"github.com/labstack/echo"
 	"net/http"
 	"strconv"
-	"topdawgsportsAPI/pkg/database/dbfantasyleague"
-	"topdawgsportsAPI/pkg/database/dbfantasyteam"
-	"topdawgsportsAPI/pkg/log"
 )
 
 // RegisterRoutes sets up routes on a given nova.Server instance
-func RegisterRoutes(s *nova.Server) {
-	s.Get("/fantasyleagues/:fantasyLeagueId", getFantasyLeagueByID)
-	s.Get("/fantasyleagues/:fantasyLeagueId/teams", getFantasyTeams)
-	s.Post("/fantasyleagues/:fantasyLeagueId", saveLeagueByID)
+func RegisterRoutes(e *echo.Echo) {
+	e.GET("/fantasyleagues/:fantasyLeagueId", getFantasyLeagueByID)
+	e.GET("/fantasyleagues/:fantasyLeagueId/teams", getFantasyTeams)
+	e.POST("/fantasyleagues/:fantasyLeagueId", saveLeagueByID)
 }
 
 // getFantasyLeagueByID searches for a single fantasy league by leagueid from the route parameter :fantasyLeagueId
-func getFantasyLeagueByID(req *nova.Request) error {
+func getFantasyLeagueByID(req echo.Context) error {
 	var err error
 
 	log.LogRequestData(req)
-	searchID := req.RouteParam("fantasyLeagueId")
+	searchID := req.Param("fantasyLeagueId")
 	num, err := strconv.ParseInt(searchID, 10, 64)
 	if err != nil {
-		return req.Error(http.StatusBadRequest, "bad fantasy league ID given")
+		return echo.NewHTTPError(http.StatusBadRequest, "bad fantasy league ID given")
 	}
 
 	includeVerboseData := req.QueryParam("includeVerboseData")
@@ -44,7 +43,7 @@ func getFantasyLeagueByID(req *nova.Request) error {
 		l, err = dbfantasyleague.ReadByID(num)
 
 		if err != nil {
-			return req.Error(http.StatusInternalServerError, "couldn't get fantasy league", err)
+			return echo.NewHTTPError(http.StatusInternalServerError, "couldn't get fantasy league", err)
 		}
 
 	}
@@ -52,12 +51,12 @@ func getFantasyLeagueByID(req *nova.Request) error {
 }
 
 // getFantasyTeams grabs all fantasy_teams for the given fantasyLeagueId
-func getFantasyTeams(req *nova.Request) error {
+func getFantasyTeams(req echo.Context) error {
 	log.LogRequestData(req)
-	tempLeagueID := req.RouteParam("fantasyLeagueId")
+	tempLeagueID := req.Param("fantasyLeagueId")
 	leagueID, err := strconv.ParseInt(tempLeagueID, 10, 64)
 	if err != nil {
-		return req.Error(http.StatusInternalServerError, "pass in a valid integer for fantasyLeagueId", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "pass in a valid integer for fantasyLeagueId", err)
 	}
 
 	orderBy := req.QueryParam("orderBy")
@@ -77,7 +76,7 @@ func getFantasyTeams(req *nova.Request) error {
 
 	teams, err := dbfantasyteam.ReadAllByFantasyLeagueID(leagueID, orderBy)
 	if err != nil {
-		return req.Error(http.StatusInternalServerError, "couldn't find teams with the fantasy league id.", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "couldn't find teams with the fantasy league id.", err)
 	}
 
 	return req.JSON(http.StatusOK, teams)
@@ -85,42 +84,35 @@ func getFantasyTeams(req *nova.Request) error {
 }
 
 // saveLeagueByID searches for a single fantasy_league by fantasyLeagueId from the route parameter :fantasyLeagueId and saves it with the data passed in
-func saveLeagueByID(req *nova.Request) error {
+func saveLeagueByID(req echo.Context) error {
 	var err error
 	// Print a copy of this request for debugging.
 	log.LogRequestData(req)
 
-	searchID := req.RouteParam("fantasyLeagueId")
+	searchID := req.Param("fantasyLeagueId")
 	fmt.Printf("fantasyLeagueId passed in : %s\n", searchID)
 	leagueId, err := strconv.ParseInt(searchID, 10, 64)
 	if err != nil {
-		return req.Error(http.StatusBadRequest, "bad fantasyLeagueId given")
+		return echo.NewHTTPError(http.StatusBadRequest, "bad fantasyLeagueId given")
 	}
 
 	_, err = dbfantasyleague.ReadByID(leagueId)
 
 	if err != nil {
-		return req.Error(http.StatusInternalServerError, "couldn't get fantasy_league", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "couldn't get fantasy_league", err)
 	}
 
-	if req.Body == nil {
-		return req.Error(http.StatusInternalServerError, "Please send a request body", 400)
-	}
-
-	var tempLeague *dbfantasyleague.FantasyLeague
-	err = json.NewDecoder(req.Body).Decode(&tempLeague)
-	if err != nil {
-		return req.Error(http.StatusInternalServerError, err.Error(), 400)
+	tempLeague := new(dbfantasyleague.FantasyLeague)
+	if err = req.Bind(tempLeague); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error(), 400)
 	}
 
 	fmt.Printf("TempLeague : %#v\n", tempLeague)
 
 	ret := dbfantasyleague.Update(tempLeague)
 	if ret != nil {
-		return req.Error(http.StatusBadRequest, ret.Error())
+		return echo.NewHTTPError(http.StatusBadRequest, ret.Error())
 	}
 
 	return req.JSON(http.StatusOK, tempLeague)
 }
-
-

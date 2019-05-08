@@ -2,7 +2,7 @@ package dbteamstandings
 
 import (
 	"fmt"
-	"topdawgsportsAPI/pkg/database"
+	"github.com/gkeele21/topdawgsportsAPI/pkg/database"
 )
 
 type TeamStandings struct {

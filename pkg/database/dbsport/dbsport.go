@@ -2,7 +2,7 @@ package dbsport
 
 import (
 	"fmt"
-	"topdawgsportsAPI/pkg/database"
+	"github.com/gkeele21/topdawgsportsAPI/pkg/database"
 )
 
 type Sport struct {

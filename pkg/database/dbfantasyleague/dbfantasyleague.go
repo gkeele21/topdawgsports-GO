@@ -15,7 +15,7 @@ type FantasyLeague struct {
 	LeaguePassword  database.NullString `db:"league_password"`
 	Visibility      string              `db:"visibility"`
 	CreatedDate     time.Time           `db:"created_date"`
-	CreatedByUserID database.NullInt64  `db:"created_by_user_id"`
+	CreatedByUserID int64               `db:"created_by_user_id"`
 	Status          string              `db:"status"`
 }
 
@@ -61,7 +61,7 @@ func Insert(d *FantasyLeague) error {
 
 	ID, err := res.LastInsertId()
 	if err != nil {
-		return fmt.Errorf("fantasyleague: couldn't get last inserted ID %S", err)
+		return fmt.Errorf("fantasyleague: couldn't get last inserted ID %s", err)
 	}
 
 	d.FantasyLeagueID = ID
@@ -85,9 +85,11 @@ func Update(s *FantasyLeague) error {
 func ReadAllBySeasonIDFantasyGameID(seasonID, gameID int64, orderBy string) ([]FantasyLeague, error) {
 	var recs []FantasyLeague
 	if orderBy == "" {
-		orderBy = "fantasy_league_id asc"
+		orderBy = "fl.fantasy_league_id asc"
 	}
-	err := database.Select(&recs, "SELECT * FROM fantasy_league WHERE season_id = ? AND fantasy_game_id = ? ORDER BY "+orderBy, seasonID, gameID)
+	err := database.Select(&recs, "SELECT * FROM fantasy_league fl "+
+		" WHERE fl.season_id = ? AND fl.fantasy_game_id = ? "+
+		" ORDER BY "+orderBy, seasonID, gameID)
 	if err != nil {
 		return nil, err
 	}

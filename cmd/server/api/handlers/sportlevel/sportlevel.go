@@ -9,9 +9,9 @@ import (
 )
 
 // RegisterRoutes sets up routes on a given nova.Server instance
-func RegisterRoutes(e *echo.Echo) {
-	e.GET("/sportlevels/:sportLevelId", getSportLevelByID)
-	e.GET("/sportlevels", getSportLevels)
+func RegisterRoutes(g *echo.Group) {
+	g.GET("/sportlevels/:sportLevelId", getSportLevelByID)
+	g.GET("/sportlevels", getSportLevels)
 }
 
 // getSportLevelByID searches for a single sportlevel by sportlevelid from the route parameter :sportLevelId

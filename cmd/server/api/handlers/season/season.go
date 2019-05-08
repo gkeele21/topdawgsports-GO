@@ -20,17 +20,18 @@ type SeasonData struct {
 }
 
 // RegisterRoutes sets up routes on a given nova.Server instance
-func RegisterRoutes(e *echo.Echo) {
-	e.GET("/seasons/:seasonId", getSeasonByID)
-	e.POST("/seasons/:seasonId", saveSeasonByID)
-	e.GET("/seasons", getSeasons)
-	e.GET("/seasons/:seasonId/games/:gameId/leagues", getSeasonGameLeagues)
+func RegisterRoutes(g *echo.Group) {
+	g.GET("/seasons/:seasonId", getSeasonByID)
+	g.POST("/seasons/:seasonId", saveSeasonByID)
+	g.GET("/seasons", getSeasons)
+	g.GET("/seasons/:seasonId/games/:gameId/leagues", getSeasonGameLeagues)
 }
 
 // getSeasonByID searches for a single season by seasonid from the route parameter :seasonId
 func getSeasonByID(req echo.Context) error {
 	var err error
 
+	fmt.Println("Here in getSeasonByID")
 	log.LogRequestData(req)
 	searchID := req.Param("seasonId")
 	num, err := strconv.ParseInt(searchID, 10, 64)

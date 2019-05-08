@@ -1,4 +1,4 @@
-package handler
+package basic
 
 import (
 	"github.com/labstack/echo"

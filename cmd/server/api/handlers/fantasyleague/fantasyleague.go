@@ -1,6 +1,7 @@
 package fantasyleague
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gkeele21/topdawgsportsAPI/pkg/database/dbfantasyleague"
 	"github.com/gkeele21/topdawgsportsAPI/pkg/database/dbfantasyteam"
@@ -11,10 +12,10 @@ import (
 )
 
 // RegisterRoutes sets up routes on a given nova.Server instance
-func RegisterRoutes(e *echo.Echo) {
-	e.GET("/fantasyleagues/:fantasyLeagueId", getFantasyLeagueByID)
-	e.GET("/fantasyleagues/:fantasyLeagueId/teams", getFantasyTeams)
-	e.POST("/fantasyleagues/:fantasyLeagueId", saveLeagueByID)
+func RegisterRoutes(g *echo.Group) {
+	g.GET("/fantasyleagues/:fantasyLeagueId", getFantasyLeagueByID)
+	g.GET("/fantasyleagues/:fantasyLeagueId/teams", getFantasyTeams)
+	g.POST("/fantasyleagues/:fantasyLeagueId", saveLeagueByID)
 }
 
 // getFantasyLeagueByID searches for a single fantasy league by leagueid from the route parameter :fantasyLeagueId
@@ -93,17 +94,24 @@ func saveLeagueByID(req echo.Context) error {
 	fmt.Printf("fantasyLeagueId passed in : %s\n", searchID)
 	leagueId, err := strconv.ParseInt(searchID, 10, 64)
 	if err != nil {
+		req.Logger().Errorf("Error getting leagueId passed in : %s", err.Error())
 		return echo.NewHTTPError(http.StatusBadRequest, "bad fantasyLeagueId given")
 	}
 
 	_, err = dbfantasyleague.ReadByID(leagueId)
 
 	if err != nil {
+		req.Logger().Errorf("Error getting fantasyleague from db : %s", err.Error())
 		return echo.NewHTTPError(http.StatusInternalServerError, "couldn't get fantasy_league", err)
 	}
 
 	tempLeague := new(dbfantasyleague.FantasyLeague)
-	if err = req.Bind(tempLeague); err != nil {
+
+	defer req.Request().Body.Close()
+	err = json.NewDecoder(req.Request().Body).Decode(&tempLeague)
+	//err = req.Bind(tempLeague)
+	if err != nil {
+		req.Logger().Errorf("Error populating tempLeague struct : %s", err.Error())
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error(), 400)
 	}
 
@@ -111,6 +119,7 @@ func saveLeagueByID(req echo.Context) error {
 
 	ret := dbfantasyleague.Update(tempLeague)
 	if ret != nil {
+		req.Logger().Errorf("Error updating fantasyleague record : %s", err.Error())
 		return echo.NewHTTPError(http.StatusBadRequest, ret.Error())
 	}
 

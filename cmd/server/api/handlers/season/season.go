@@ -22,7 +22,8 @@ type SeasonData struct {
 // RegisterRoutes sets up routes on a given nova.Server instance
 func RegisterRoutes(g *echo.Group) {
 	g.GET("/seasons/:seasonId", getSeasonByID)
-	g.POST("/seasons/:seasonId", saveSeasonByID)
+	g.PUT("/seasons/:seasonId", saveSeasonByID)
+	g.POST("/seasons", createSeason)
 	g.GET("/seasons", getSeasons)
 	g.GET("/seasons/:seasonId/games/:gameId/leagues", getSeasonGameLeagues)
 }
@@ -183,4 +184,37 @@ func getSeasonGameLeagues(req echo.Context) error {
 
 	return req.JSON(http.StatusOK, leagues)
 
+}
+
+// createSeason creates a new season record with the data passed in
+func createSeason(req echo.Context) error {
+	var err error
+	// Print a copy of this request for debugging.
+	log.LogRequestData(req)
+
+	tempSeason := new(SeasonData)
+	if err = req.Bind(tempSeason); err != nil {
+		fmt.Printf("Error : %#v", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "Please send a request body", 400)
+	}
+
+	fmt.Printf("TempSeason : %#v\n", tempSeason)
+
+	s := new(dbseason.Season)
+	if tempSeason.Name != "" {
+		s.Name = tempSeason.Name
+	}
+
+	s.Status = tempSeason.Status
+	s.StartingYear = database.ToNullInt(tempSeason.StartingYear, false)
+	s.SportLevelID = tempSeason.SportLevelId
+	s.Status = tempSeason.Status
+
+	fmt.Printf("Season data to create: %#v\n", s)
+	ret := dbseason.Insert(s)
+	if ret != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, ret.Error())
+	}
+
+	return req.JSON(http.StatusOK, s)
 }

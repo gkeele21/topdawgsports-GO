@@ -1,8 +1,8 @@
 package fantasyleague
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/gkeele21/topdawgsportsAPI/pkg/database"
 	"github.com/gkeele21/topdawgsportsAPI/pkg/database/dbfantasyleague"
 	"github.com/gkeele21/topdawgsportsAPI/pkg/database/dbfantasyteam"
 	"github.com/gkeele21/topdawgsportsAPI/pkg/log"
@@ -11,11 +11,23 @@ import (
 	"strconv"
 )
 
+type LeagueData struct {
+	FantasyLeagueID int64
+	SeasonID        int64
+	FantasyGameID   int64
+	Name            string
+	Description     string
+	LeaguePassword  string
+	Visibility      string
+	Status          string
+}
+
 // RegisterRoutes sets up routes on a given nova.Server instance
 func RegisterRoutes(g *echo.Group) {
 	g.GET("/fantasyleagues/:fantasyLeagueId", getFantasyLeagueByID)
 	g.GET("/fantasyleagues/:fantasyLeagueId/teams", getFantasyTeams)
-	g.POST("/fantasyleagues/:fantasyLeagueId", saveLeagueByID)
+	g.PUT("/fantasyleagues/:fantasyLeagueId", saveLeagueByID)
+	g.POST("/fantasyleagues", createLeague)
 }
 
 // getFantasyLeagueByID searches for a single fantasy league by leagueid from the route parameter :fantasyLeagueId
@@ -98,18 +110,17 @@ func saveLeagueByID(req echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "bad fantasyLeagueId given")
 	}
 
-	_, err = dbfantasyleague.ReadByID(leagueId)
+	league, err := dbfantasyleague.ReadByID(leagueId)
 
 	if err != nil {
 		req.Logger().Errorf("Error getting fantasyleague from db : %s", err.Error())
 		return echo.NewHTTPError(http.StatusInternalServerError, "couldn't get fantasy_league", err)
 	}
 
-	tempLeague := new(dbfantasyleague.FantasyLeague)
-
-	defer req.Request().Body.Close()
-	err = json.NewDecoder(req.Request().Body).Decode(&tempLeague)
-	//err = req.Bind(tempLeague)
+	tempLeague := new(LeagueData)
+	if err = req.Bind(tempLeague); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Please send a request body", 400)
+	}
 	if err != nil {
 		req.Logger().Errorf("Error populating tempLeague struct : %s", err.Error())
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error(), 400)
@@ -117,11 +128,57 @@ func saveLeagueByID(req echo.Context) error {
 
 	fmt.Printf("TempLeague : %#v\n", tempLeague)
 
-	ret := dbfantasyleague.Update(tempLeague)
+	if tempLeague.Name != "" {
+		league.Name = tempLeague.Name
+	}
+	if tempLeague.Description != "" {
+		league.Description = database.ToNullString(tempLeague.Description, true)
+	}
+
+	league.LeaguePassword = database.ToNullString(tempLeague.LeaguePassword, true)
+	league.FantasyGameID = tempLeague.FantasyGameID
+	league.SeasonID = tempLeague.SeasonID
+	league.Status = tempLeague.Status
+	league.Visibility = tempLeague.Visibility
+
+	ret := dbfantasyleague.Update(league)
 	if ret != nil {
 		req.Logger().Errorf("Error updating fantasyleague record : %s", err.Error())
 		return echo.NewHTTPError(http.StatusBadRequest, ret.Error())
 	}
 
-	return req.JSON(http.StatusOK, tempLeague)
+	return req.JSON(http.StatusOK, league)
+}
+
+// createLeague creates a new fantasyleague with the data passed in
+func createLeague(req echo.Context) error {
+	var err error
+	// Print a copy of this request for debugging.
+	log.LogRequestData(req)
+
+	league := new(dbfantasyleague.FantasyLeague)
+
+	tempLeague := new(LeagueData)
+	if err = req.Bind(tempLeague); err != nil {
+		fmt.Printf("Error : %#v", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "Please send a request body", 400)
+	}
+
+	fmt.Printf("TempLeague : %#v\n", tempLeague)
+
+	league.Name = tempLeague.Name
+	league.Description = database.ToNullString(tempLeague.Description, true)
+	league.LeaguePassword = database.ToNullString(tempLeague.LeaguePassword, true)
+	league.FantasyGameID = tempLeague.FantasyGameID
+	league.SeasonID = tempLeague.SeasonID
+	league.Status = tempLeague.Status
+	league.Visibility = tempLeague.Visibility
+
+	ret := dbfantasyleague.Insert(league)
+	if ret != nil {
+		req.Logger().Errorf("Error updating fantasyleague record : %s", err.Error())
+		return echo.NewHTTPError(http.StatusBadRequest, ret.Error())
+	}
+
+	return req.JSON(http.StatusOK, league)
 }

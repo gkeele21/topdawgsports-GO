@@ -31,6 +31,9 @@ func connect() {
 		dbName := os.Getenv("TOPDAWG_DB_NAME")
 		dbPort := os.Getenv("TOPDAWG_DB_PORT")
 
+		if dbPort == "" {
+			dbPort = "3306"
+		}
 		if host == "" || username == "" || password == "" || host == "" {
 			log.Fatal("invalid db config : env variables not set [TOPDAWG_DB_READ_HOST] [TOPDAWG_DB_USERNAME] [TOPDAWG_DB_PASSWORD] [TOPDAWG_DB_NAME]")
 		}

@@ -6,6 +6,7 @@ import (
 	"github.com/gkeele21/topdawgsportsAPI/cmd/server/api/handlers/authentication"
 	"github.com/gkeele21/topdawgsportsAPI/cmd/server/api/handlers/basic"
 	"github.com/gkeele21/topdawgsportsAPI/cmd/server/api/handlers/fantasyleague"
+	"github.com/gkeele21/topdawgsportsAPI/cmd/server/api/handlers/fantasyteam"
 	"github.com/gkeele21/topdawgsportsAPI/cmd/server/api/handlers/season"
 	"github.com/gkeele21/topdawgsportsAPI/cmd/server/api/handlers/sportlevel"
 	"github.com/gkeele21/topdawgsportsAPI/cmd/server/api/handlers/user"
@@ -67,8 +68,8 @@ func registerHandlers(e *echo.Echo, g *echo.Group) {
 	basic.RegisterRoutes(e)
 	authentication.RegisterRoutes(e)
 	fantasyleague.RegisterRoutes(g)
+	fantasyteam.RegisterRoutes(g)
 	season.RegisterRoutes(g)
 	sportlevel.RegisterRoutes(g)
 	user.RegisterRoutes(g)
 }
-

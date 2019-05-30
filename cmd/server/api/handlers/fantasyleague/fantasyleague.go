@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 type LeagueData struct {
@@ -20,12 +21,13 @@ type LeagueData struct {
 	LeaguePassword  string
 	Visibility      string
 	Status          string
+	CreatedByUserID int64
 }
 
 // RegisterRoutes sets up routes on a given nova.Server instance
 func RegisterRoutes(g *echo.Group) {
 	g.GET("/fantasyleagues/:fantasyLeagueId", getFantasyLeagueByID)
-	g.GET("/fantasyleagues/:fantasyLeagueId/teams", getFantasyTeams)
+	g.GET("/fantasyleagues/:fantasyLeagueId/teams", getFantasyTeamsFull)
 	g.PUT("/fantasyleagues/:fantasyLeagueId", saveLeagueByID)
 	g.POST("/fantasyleagues", createLeague)
 }
@@ -63,8 +65,8 @@ func getFantasyLeagueByID(req echo.Context) error {
 	return req.JSON(http.StatusOK, l)
 }
 
-// getFantasyTeams grabs all fantasy_teams for the given fantasyLeagueId
-func getFantasyTeams(req echo.Context) error {
+// getFantasyTeamsFull grabs all fantasy_teams for the given fantasyLeagueId including user's name
+func getFantasyTeamsFull(req echo.Context) error {
 	log.LogRequestData(req)
 	tempLeagueID := req.Param("fantasyLeagueId")
 	leagueID, err := strconv.ParseInt(tempLeagueID, 10, 64)
@@ -87,7 +89,7 @@ func getFantasyTeams(req echo.Context) error {
 		orderBy = ""
 	}
 
-	teams, err := dbfantasyteam.ReadAllByFantasyLeagueID(leagueID, orderBy)
+	teams, err := dbfantasyteam.ReadAllByFantasyLeagueIDFull(leagueID, orderBy)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "couldn't find teams with the fantasy league id.", err)
 	}
@@ -173,7 +175,10 @@ func createLeague(req echo.Context) error {
 	league.SeasonID = tempLeague.SeasonID
 	league.Status = tempLeague.Status
 	league.Visibility = tempLeague.Visibility
+	league.CreatedByUserID = tempLeague.CreatedByUserID
+	league.CreatedDate = time.Now()
 
+	fmt.Printf("League data to create: %#v\n", league)
 	ret := dbfantasyleague.Insert(league)
 	if ret != nil {
 		req.Logger().Errorf("Error updating fantasyleague record : %s", err.Error())

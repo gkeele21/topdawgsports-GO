@@ -53,7 +53,9 @@ func Delete(d *FantasyLeague) error {
 
 // Insert will create a new record in the database
 func Insert(d *FantasyLeague) error {
-	res, err := database.Exec(database.BuildInsert("fantasy_league", d), database.GetArguments(*d)...)
+	statement := database.BuildInsert("fantasy_league", d)
+	fmt.Printf("Insert : %s\n", statement)
+	res, err := database.Exec(statement, database.GetArguments(*d)...)
 
 	if err != nil {
 		return fmt.Errorf("fantasyleague: couldn't insert new %s", err)

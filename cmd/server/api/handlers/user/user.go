@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/gkeele21/topdawgsportsAPI/pkg/database/dbuser"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database/dbuser"
 	"github.com/gkeele21/topdawgsportsAPI/pkg/log"
 	"github.com/labstack/echo"
 	"net/http"
@@ -50,4 +50,3 @@ func getUsers(req echo.Context) error {
 
 	return req.JSON(http.StatusOK, users)
 }
-

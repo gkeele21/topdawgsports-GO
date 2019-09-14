@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gkeele21/topdawgsportsAPI/pkg/database"
-	"github.com/gkeele21/topdawgsportsAPI/pkg/database/dbrole"
-	"github.com/gkeele21/topdawgsportsAPI/pkg/database/dbuser"
-	"github.com/gkeele21/topdawgsportsAPI/pkg/database/dbuserrole"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database/dbrole"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database/dbuser"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database/dbuserrole"
 	"github.com/gkeele21/topdawgsportsAPI/pkg/log"
 	"github.com/labstack/echo"
 	"net/http"
@@ -35,13 +35,13 @@ type newUserForm struct {
 }
 
 type returnUser struct {
-	IsAdmin   bool            `json:"is_admin"`
-	UserID    int64           `json:"user_id"`
-	FirstName string          `json:"first_name"`
-	LastName  string          `json:"last_name"`
-	Username  string          `json:"username"`
-	Email     string          `json:"email"`
-	Cell      string          `json:"cell"`
+	IsAdmin   bool   `json:"is_admin"`
+	UserID    int64  `json:"user_id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Username  string `json:"username"`
+	Email     string `json:"email"`
+	Cell      string `json:"cell"`
 }
 
 type JwtClaims struct {

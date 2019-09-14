@@ -2,9 +2,9 @@ package season
 
 import (
 	"fmt"
-	"github.com/gkeele21/topdawgsportsAPI/pkg/database"
-	"github.com/gkeele21/topdawgsportsAPI/pkg/database/dbfantasyleague"
-	"github.com/gkeele21/topdawgsportsAPI/pkg/database/dbseason"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database/dbfantasyleague"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database/dbseason"
 	"github.com/gkeele21/topdawgsportsAPI/pkg/log"
 	"github.com/labstack/echo"
 	"net/http"

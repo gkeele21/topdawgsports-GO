@@ -2,8 +2,8 @@ package fantasyteam
 
 import (
 	"fmt"
-	"github.com/gkeele21/topdawgsportsAPI/pkg/database"
-	"github.com/gkeele21/topdawgsportsAPI/pkg/database/dbfantasyteam"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database/dbfantasyteam"
 	"github.com/gkeele21/topdawgsportsAPI/pkg/log"
 	"github.com/labstack/echo"
 	"net/http"

@@ -1,7 +1,7 @@
 package sportlevel
 
 import (
-	"github.com/gkeele21/topdawgsportsAPI/pkg/database/dbsportlevel"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database/dbsportlevel"
 	"github.com/gkeele21/topdawgsportsAPI/pkg/log"
 	"github.com/labstack/echo"
 	"net/http"

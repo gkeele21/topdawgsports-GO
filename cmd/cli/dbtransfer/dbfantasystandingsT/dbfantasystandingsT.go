@@ -3,10 +3,10 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"os"
-	"topdawgsportsAPI/pkg/database"
 	"topdawgsportsAPI/pkg/database/dbfantasyheadtoheadstandings"
 	"topdawgsportsAPI/pkg/database/dbfantasysalarystandings"
 	"topdawgsportsAPI/pkg/database/dbloveemstandings"

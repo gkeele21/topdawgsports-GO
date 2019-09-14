@@ -17,7 +17,7 @@ func SetMainMiddleware(e *echo.Echo) {
 func SetJwtMiddleware(g *echo.Group) {
 	g.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningMethod: "HS512",
-		SigningKey: []byte(authentication.JWTSecret),
+		SigningKey:    []byte(authentication.JWTSecret),
 	}))
 
 }

@@ -4,22 +4,22 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/gkeele21/topdawgsportsAPI/internal/app/database"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database/dbteam"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
-	"topdawgsportsAPI/pkg/database/dbteam"
 )
 
 var db *sql.DB
 
 func main() {
 	// grab all teams from the existing database
-	db, err := sql.Open("mysql", "webuser:lakers55@tcp(topdawg.circlepix.com:3306)/topdawg?parseTime=true")
+	db, err := sql.Open("mysql", "sumo:password@tcp(127.0.0.1:3307)/topdawg?parseTime=true")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	rows, err := db.Query("SELECT TeamID, FullName, Abbreviation, Mascot FROM Team WHERE TeamID > 0")
+	rows, err := db.Query("SELECT TeamID, FullName, Abbreviation, Mascot FROM team WHERE TeamID > 0")
 	if err != nil {
 		log.Fatal(err)
 	}

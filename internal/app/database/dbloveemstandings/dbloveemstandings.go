@@ -83,3 +83,14 @@ func Save(s *LoveEmStandings) error {
 		return Insert(s)
 	}
 }
+
+// ReadLeagueWeekStandings reads all records in the database for a given leagueId and weekId
+func ReadLeagueWeekStandings(leagueID, weekID int64) ([]LoveEmStandings, error) {
+	var recs []LoveEmStandings
+	err := database.Select(&recs, "SELECT * FROM loveem_standings WHERE fantasy_league_id = ? AND week_id = ?", leagueID, weekID)
+	if err != nil {
+		return nil, err
+	}
+
+	return recs, nil
+}

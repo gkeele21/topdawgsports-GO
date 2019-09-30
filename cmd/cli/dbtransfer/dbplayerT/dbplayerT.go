@@ -4,22 +4,23 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/gkeele21/topdawgsportsAPI/internal/app/database"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database/dbplayer"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
-	"topdawgsportsAPI/pkg/database/dbplayer"
+	"strconv"
 )
 
 var db *sql.DB
 
 func main() {
 	// grab all players from the existing database
-	db, err := sql.Open("mysql", "webuser:lakers55@tcp(topdawg.circlepix.com:3306)/topdawg?parseTime=true")
+	db, err := sql.Open("mysql", "sumo:password@tcp(127.0.0.1:3307)/topdawg?parseTime=true")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	rows, err := db.Query("SELECT PlayerID, TeamID, PositionID, FirstName, LastName, IsActive, NFLGameStatsID FROM Player WHERE isActive = 1")
+	rows, err := db.Query("SELECT PlayerID, TeamID, PositionID, FirstName, LastName, IsActive, NFLGameStatsID, StatsPlayerID FROM player")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,9 +28,9 @@ func main() {
 
 	for rows.Next() {
 		var playerid, isactive int64
-		var teamid, positionid database.NullInt64
+		var teamid, positionid, statsplayerid database.NullInt64
 		var firstname, lastname, statsid database.NullString
-		if err := rows.Scan(&playerid, &teamid, &positionid, &firstname, &lastname, &isactive, &statsid); err != nil {
+		if err := rows.Scan(&playerid, &teamid, &positionid, &firstname, &lastname, &isactive, &statsid, &statsplayerid); err != nil {
 			log.Fatal(err)
 		}
 
@@ -38,6 +39,10 @@ func main() {
 		status := "active"
 		if isactive == 0 {
 			status = "inactive"
+		}
+
+		if statsid.String == "null" {
+			statsid = database.ToNullString(strconv.FormatInt(statsplayerid.Int64, 10), true)
 		}
 		player := dbplayer.Player{
 			PlayerID:  playerid,
@@ -62,6 +67,7 @@ func main() {
 
 		if positionid.Int64 >= 12 {
 			sportlevelid = 4
+			player.PositionID = database.ToNullInt(8, true)
 		}
 
 		player.SportLevelID = sportlevelid

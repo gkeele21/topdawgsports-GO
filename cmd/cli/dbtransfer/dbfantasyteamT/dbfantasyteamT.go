@@ -4,23 +4,23 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/gkeele21/topdawgsportsAPI/internal/app/database"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database/dbfantasyteam"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"time"
-	"topdawgsportsAPI/pkg/database/dbfantasyteam"
 )
 
 var db *sql.DB
 
 func main() {
 	// grab all teams from the existing database
-	db, err := sql.Open("mysql", "webuser:lakers55@tcp(127.0.0.1:3306)/topdawg?parseTime=true")
+	db, err := sql.Open("mysql", "sumo:password@tcp(127.0.0.1:3307)/topdawg?parseTime=true")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	rows, err := db.Query("SELECT fst.FSTeamID, fst.FSLeagueID, fst.FSUserID, fst.TeamName, fst.DateCreated, fst.ScheduleTeamNo FROM FSTeam fst INNER JOIN FSUser u on u.FSUserID = fst.FSUserID")
+	rows, err := db.Query("SELECT fst.FSTeamID, fst.FSLeagueID, fst.FSUserID, fst.TeamName, fst.DateCreated, fst.ScheduleTeamNo FROM fsteam fst INNER JOIN fsuser u on u.FSUserID = fst.FSUserID")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,7 +42,7 @@ func main() {
 			FantasyLeagueID:    fsleagueid,
 			UserID:             fsuserid,
 			Name:               teamname,
-			Created:            dateCreated,
+			CreatedDate:        dateCreated,
 			ScheduleTeamNumber: scheduleteamno,
 			Status:             "active",
 		}

@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database/dbfantasyteam"
 	"github.com/gkeele21/topdawgsportsAPI/internal/app/database/dbuser"
 	"github.com/gkeele21/topdawgsportsAPI/pkg/log"
 	"github.com/labstack/echo"
@@ -12,6 +13,7 @@ import (
 func RegisterRoutes(g *echo.Group) {
 	g.GET("/users/:userId", getUserByID)
 	g.GET("/users", getUsers)
+	g.GET("/users/:userId/activeteams", getActiveTeams)
 }
 
 // Response is the json representation of a user
@@ -44,6 +46,26 @@ func getUserByID(req echo.Context) error {
 func getUsers(req echo.Context) error {
 	log.LogRequestData(req)
 	users, err := dbuser.ReadAll()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "couldn't find users", err)
+	}
+
+	return req.JSON(http.StatusOK, users)
+}
+
+// getActiveTeams grabs all active teams for the user
+func getActiveTeams(req echo.Context) error {
+	log.LogRequestData(req)
+	userID := req.Param("userId")
+	num, err := strconv.ParseInt(userID, 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "bad user ID given")
+	}
+
+	var u *dbuser.User
+	u, err = dbuser.ReadByID(num)
+
+	users, err := dbfantasyteam.ReadByUserIDFull(u.UserID, "active","")
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "couldn't find users", err)
 	}

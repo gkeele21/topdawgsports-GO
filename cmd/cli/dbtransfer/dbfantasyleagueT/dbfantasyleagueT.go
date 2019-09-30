@@ -4,24 +4,24 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/gkeele21/topdawgsportsAPI/internal/app/database"
+	"github.com/gkeele21/topdawgsportsAPI/internal/app/database/dbfantasyleague"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"time"
-	"topdawgsportsAPI/pkg/database/dbfantasyleague"
 )
 
 var db *sql.DB
 
 func main() {
 	// grab all teams from the existing database
-	db, err := sql.Open("mysql", "webuser:lakers55@tcp(127.0.0.1:3306)/topdawg?parseTime=true")
+	db, err := sql.Open("mysql", "sumo:password@tcp(127.0.0.1:3307)/topdawg?parseTime=true")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
 	rows, err := db.Query("SELECT fsl.FSLeagueID, fsl.LeagueName, fsl.LeaguePassword, fsl.Description, fsl.IsPublic, fss.SeasonID, fss.FSGameID " +
-		"FROM FSLeague fsl INNER JOIN FSSeason fss on fss.FSSeasonID = fsl.FSSeasonID")
+		"FROM fsleague fsl INNER JOIN fsseason fss on fss.FSSeasonID = fsl.FSSeasonID")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -45,6 +45,7 @@ func main() {
 			Status:          "final",
 			LeaguePassword:  password,
 			CreatedDate:     time.Now(),
+			CreatedByUserID: 1,
 		}
 
 		if ispublic.Valid && ispublic.String == "0" {

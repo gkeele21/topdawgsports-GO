@@ -17,16 +17,19 @@ type FantasyTeam struct {
 }
 
 type FantasyTeamFull struct {
-	FantasyTeamID      int64              `db:"fantasy_team_id"`
-	TeamName           string             `db:"fantasy_team_name"`
-	DateCreated        time.Time          `db:"created_date"`
-	Status             string             `db:"status"`
-	ScheduleTeamNumber database.NullInt64 `db:"schedule_team_number"`
-	FantasyLeagueID    int64              `db:"fantasy_league_id"`
-	FantasyLeagueName  string             `db:"fantasy_league_name"`
-	UserID             int64              `db:"user_id"`
-	UserFirstName      string             `db:"first_name"`
-	UserLastName       string             `db:"last_name"`
+	SeasonName             string              `db:"season_name"`
+	FantasyGameName        string              `db:"fantasy_game_name"`
+	FantasyGameLandingPage database.NullString `db:"landing_page_url"`
+	FantasyTeamID          int64               `db:"fantasy_team_id"`
+	TeamName               string              `db:"fantasy_team_name"`
+	DateCreated            time.Time           `db:"created_date"`
+	Status                 string              `db:"status"`
+	ScheduleTeamNumber     database.NullInt64  `db:"schedule_team_number"`
+	FantasyLeagueID        int64               `db:"fantasy_league_id"`
+	FantasyLeagueName      string              `db:"fantasy_league_name"`
+	UserID                 int64               `db:"user_id"`
+	UserFirstName          string              `db:"first_name"`
+	UserLastName           string              `db:"last_name"`
 }
 
 // ReadByID reads by id column
@@ -127,6 +130,34 @@ func ReadAllByFantasyLeagueIDFull(fantasyLeagueID int64, orderBy string) ([]Fant
 	fmt.Printf("SQL : %s\n", sql)
 	fmt.Printf("FantasyLeagueID: %s\n", fantasyLeagueID)
 	err := database.Select(&recs, sql, fantasyLeagueID)
+	if err != nil {
+		fmt.Printf("Error getting teams: %#v\n", err)
+		return nil, err
+	}
+
+	return recs, nil
+}
+
+// ReadByUserIDFull reads all fantasy_teams in the database for the given userID
+func ReadByUserIDFull(userID int64, activeStatus, orderBy string) ([]FantasyTeamFull, error) {
+	var recs []FantasyTeamFull
+	if orderBy == "" {
+		orderBy = "fantasy_team_id asc"
+	}
+	if activeStatus == "" {
+		activeStatus = "active"
+	}
+
+	sql := "SELECT se.name as season_name, g.name as fantasy_game_name, g.landing_page_url, ft.fantasy_team_id, ft.name as fantasy_team_name, ft.created_date, ft.status, ft.schedule_team_number, ft.fantasy_league_id, fl.name as fantasy_league_name, ft.user_id, u.first_name, u.last_name" +
+		" FROM fantasy_team ft " +
+		" INNER JOIN user u ON u.user_id = ft.user_id " +
+		" INNER JOIN fantasy_league fl ON fl.fantasy_league_id = ft.fantasy_league_id " +
+		" INNER JOIN season se ON se.season_id = fl.season_id " +
+		" INNER JOIN fantasy_game g ON g.fantasy_game_id = fl.fantasy_game_id " +
+		" WHERE ft.user_id = ? " +
+		" AND ft.status = ? " +
+		" ORDER BY ?"
+	err := database.Select(&recs, sql, userID, activeStatus, orderBy)
 	if err != nil {
 		fmt.Printf("Error getting teams: %#v\n", err)
 		return nil, err

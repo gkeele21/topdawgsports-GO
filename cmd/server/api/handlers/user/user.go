@@ -65,7 +65,7 @@ func getActiveTeams(req echo.Context) error {
 	var u *dbuser.User
 	u, err = dbuser.ReadByID(num)
 
-	users, err := dbfantasyteam.ReadByUserIDFull(u.UserID, "active","")
+	users, err := dbfantasyteam.ReadByUserIDFull(u.PersonID, "active","")
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "couldn't find users", err)
 	}

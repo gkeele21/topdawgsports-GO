@@ -7,10 +7,10 @@ import (
 )
 
 type User struct {
-	UserID        int64               `db:"user_id"`
+	PersonID      int64               `db:"person_id"`
 	Email         string              `db:"email"`
 	Username      database.NullString `db:"username"`
-	UserPassword  database.NullString `db:"user_password"`
+	UserPassword  database.NullString `db:"person_password"`
 	FirstName     string              `db:"first_name"`
 	LastName      database.NullString `db:"last_name"`
 	Cell          database.NullString `db:"cell"`
@@ -21,7 +21,7 @@ type User struct {
 // ReadByID reads user by id column
 func ReadByID(ID int64) (*User, error) {
 	u := User{}
-	err := database.Get(&u, "SELECT * FROM user where user_id = ?", ID)
+	err := database.Get(&u, "SELECT * FROM person where person_id = ?", ID)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func ReadByID(ID int64) (*User, error) {
 // ReadAll reads all users in the database
 func ReadAll() ([]User, error) {
 	var users []User
-	err := database.Select(&users, "SELECT * FROM user")
+	err := database.Select(&users, "SELECT * FROM person")
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func ReadAll() ([]User, error) {
 
 // Delete deletes a user from the database
 func Delete(u *User) error {
-	_, err := database.Exec("DELETE FROM user WHERE user_id = ?", u.UserID)
+	_, err := database.Exec("DELETE FROM person WHERE user_id = ?", u.PersonID)
 	if err != nil {
 		return fmt.Errorf("user: couldn't delete user %s", err)
 	}
@@ -52,7 +52,7 @@ func Delete(u *User) error {
 
 // Insert will create a new record in the database
 func Insert(u *User) error {
-	res, err := database.Exec(database.BuildInsert("user", u), database.GetArguments(*u)...)
+	res, err := database.Exec(database.BuildInsert("person", u), database.GetArguments(*u)...)
 
 	if err != nil {
 		return fmt.Errorf("user: couldn't insert new %s", err)
@@ -63,7 +63,7 @@ func Insert(u *User) error {
 		return fmt.Errorf("user: couldn't get last inserted ID %S", err)
 	}
 
-	u.UserID = ID
+	u.PersonID = ID
 
 	return nil
 }
@@ -81,7 +81,7 @@ func Update(s *User) error {
 }
 
 func Save(s *User) error {
-	if s.UserID > 0 {
+	if s.PersonID > 0 {
 		return Update(s)
 	} else {
 		return Insert(s)
@@ -91,7 +91,7 @@ func Save(s *User) error {
 // ReadByUsername reads user by username column
 func ReadByUsername(username string) (*User, error) {
 	u := User{}
-	err := database.Get(&u, "SELECT * FROM user where username = ?", username)
+	err := database.Get(&u, "SELECT * FROM person where username = ?", username)
 	if err != nil {
 		return nil, err
 	}

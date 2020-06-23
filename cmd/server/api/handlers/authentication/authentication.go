@@ -79,14 +79,14 @@ func login(req echo.Context) error {
 		// check password
 		userpass := database.ToNullString(password, false)
 		if user.UserPassword == userpass {
-			token, err := createJwtToken(strconv.FormatInt(user.UserID, 10), user.FirstName)
+			token, err := createJwtToken(strconv.FormatInt(user.PersonID, 10), user.FirstName)
 			if err != nil {
 				log.Println("ERROR", "Error creating JWT Token", err.Error())
 				return req.String(http.StatusInternalServerError, "something went wrong")
 			}
 
 			returnUser := returnUser{}
-			returnUser.UserID = user.UserID
+			returnUser.UserID = user.PersonID
 			returnUser.FirstName = user.FirstName
 			returnUser.LastName = user.LastName.String
 			returnUser.Email = user.Email
@@ -95,7 +95,7 @@ func login(req echo.Context) error {
 
 			// get user roles, if any
 			returnUser.IsAdmin = false
-			roles, _ := dbuserrole.ReadByUserID(user.UserID)
+			roles, _ := dbuserrole.ReadByUserID(user.PersonID)
 
 			for _, role := range roles {
 				roleId := role.RoleID
@@ -193,14 +193,14 @@ func register(req echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "couldn't insert user", err)
 	}
 
-	token, err := createJwtToken(strconv.FormatInt(user.UserID, 10), user.FirstName)
+	token, err := createJwtToken(strconv.FormatInt(user.PersonID, 10), user.FirstName)
 	if err != nil {
 		log.Println("ERROR", "Error creating JWT Token", err.Error())
 		return req.String(http.StatusInternalServerError, "something went wrong")
 	}
 
 	returnUser := returnUser{}
-	returnUser.UserID = user.UserID
+	returnUser.UserID = user.PersonID
 	returnUser.FirstName = user.FirstName
 	returnUser.LastName = user.LastName.String
 	returnUser.Email = user.Email
@@ -223,7 +223,7 @@ func CheckIfUsernameExists(username string) (bool, error) {
 		return false, err
 	}
 
-	if existingUser.UserID > 0 {
+	if existingUser.PersonID > 0 {
 		exists = true
 	}
 
